@@ -1,0 +1,180 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+#define REQUIRED(n) \
+if (ip + n > limit) { \
+    printf("ERROR: no enough bytecode at ip:%d \n", ip); \
+    return 8; \
+}
+
+typedef enum {
+    PUSH = 1,
+    POP = 2,
+    ADD = 3,
+    DUP = 6,
+    JMP = 7,
+    HALT = 255
+} inst;
+
+typedef struct stack {
+    int *data;
+    int cap;
+    int sp;
+} stack;
+
+int read_op(stack *p, unsigned char *code, long limit);
+int stack_init(stack *pm, int cap);
+
+int stackoverflow(stack *pm);
+int stackunderflow(stack *pm);
+
+int push(stack *pm, size_t push_value);
+int pop(stack *pm, size_t *pop_value);
+
+int OP_ADD(stack *p);
+int OP_DUP(stack *pm);
+int OP_JMP(size_t *ip, long limit ,size_t target);
+
+int main() {
+    FILE *file;
+    stack pmem;
+    file = fopen("program.bin","rb");
+
+    fseek(file, 0, SEEK_END);
+    long size = ftell(file);
+    fseek(file, 0, SEEK_SET);
+   
+    unsigned char *buffer = malloc(size);
+    if (!buffer) return 1;
+
+    size_t read = fread(buffer, 1, size, file);
+    fclose(file);
+
+    if (read != size) {
+        printf("ERROR while reading the file");
+        return 2;
+    }
+
+    stack_init(&pmem, 4);
+    read_op(&pmem, buffer, size);
+
+    free(buffer);
+    free(pmem.data);
+}
+
+int stack_init(stack *pm, int cap) {
+    pm->cap = cap;
+    pm->sp = 0;
+    pm->data = malloc(sizeof(pm->data) * pm->cap);
+    if (pm->data == NULL) return 3;
+}
+
+int read_op(stack *p, unsigned char *code, long limit) {
+    size_t ip = 0;
+    while (ip < limit) {
+        switch(code[ip]) {
+            case PUSH:
+                REQUIRED(2);
+                if(push(p, code[ip + 1])) return 4;
+                ip+=2;
+                break;
+
+            case ADD:
+                REQUIRED(1);
+                if (OP_ADD(p)) return 5;
+                ip++;
+                break;
+            
+            case DUP:
+                REQUIRED(1);
+                if(OP_DUP(p)) return 9;
+                ip++;
+                break;
+            
+            case JMP:
+                REQUIRED(2);
+                if (OP_JMP(&ip, limit, code[ip + 1])) return 10;
+                ip+=2;
+
+            case HALT:
+                REQUIRED(1);
+                return 0;
+
+            default:
+                printf("ERROR: unidentfied byte at %d\n", ip);
+                return 404;
+        }
+    }
+
+    printf("missing HALT\n");
+    return 6;
+}
+
+int stackoverflow(stack *pm) {
+    if (pm->cap == pm->sp) {
+        int *tmp = realloc(pm->data, sizeof(int) * pm->cap * 2);
+        if (tmp == NULL) {
+            printf("couldnt allocate more memory");
+            return 4;
+        }
+        pm->cap = pm->cap * 2;
+        pm->data = tmp;
+    }
+    return 0;
+}
+
+int stackunderflow(stack *pm) {
+    if (pm->sp <= 0) {
+        printf("trying to access memory that is not avalible\n");
+        pm->sp = 0;
+        return 5;
+    }
+    return 0;
+}
+
+int push(stack *pm, size_t push_value) {
+    if (stackoverflow(pm)) return 4; 
+
+    pm->data[pm->sp++] = push_value;
+    return 0;
+}
+
+int pop(stack *pm, size_t *pop_value) {
+    if (stackunderflow(pm)) return 5;
+
+    *pop_value = pm->data[--pm->sp];
+    return 0;
+}
+
+int OP_ADD(stack *p) {
+    size_t val_1, val_2;
+
+    if (pop(p, &val_1)) return 5;
+    if (pop(p, &val_2)) return 5;
+
+    //printf("val_1 = %d, val_2 = %d\n", val_1, val_2);
+
+    int result = val_1 + val_2;
+    printf("result: %zu\n", result);
+
+    push(p, result);
+    return 0;
+}
+
+int OP_DUP(stack *pm) {
+    if (pm->sp < 1) return 5;
+    if (stackoverflow(pm)) return 4;
+
+    pm->data[pm->sp] = pm->data[pm->sp - 1];
+    pm->sp++;
+    return 0;
+}
+
+int OP_JMP(size_t *ip, long limit ,size_t target) {
+    //TODO: debug this shii
+    if (target < limit) return 4;
+    if (target < 0) return 5;
+
+    //TODO: check if target is a valid opcode
+    *ip = target;
+}

@@ -1,0 +1,31 @@
+PUSH - 0x01:
+    consumes 1 operand byte
+    effect: pushes x into stack
+    ip += 2
+
+POP - 0x02:
+    consumes 1 operand byte 
+    effect: pops x from the stack and stores x at 'pop_value'
+    ip += 1 
+
+ADD - 0x03:
+    consumes 2 operand bytes
+    requires: stack size >= 2 
+    effect: pop 'val_1' pop 'val_2', push 'result' 
+    ip += 1
+
+SUB - 0x04: //TODO
+
+MUL - 0x05: //TODO
+
+DUP - 0x06: 
+    consumes 1 operand byte
+    requires: stack pointer > 0
+    effect: copies sp-1 in sp and moves sp += 1 (sp shouldnt decrease)
+    ip += 1 
+
+JMP - 0x07: //TODO
+
+HALT - 0xFF:
+    consumes 0 operands
+    effect: ends the program

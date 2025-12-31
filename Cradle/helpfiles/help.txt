@@ -1,0 +1,25 @@
+ip determines the jump in inst, hence its possible to move it as long as one instruction byte
+everything below sp is revelant, above that is *garbage value*
+
+sp - stack pointer
+ip - instruction pointer 
+pm - pointer memory
+
+Program memory:
+    read-only byte array
+    indexed by ip
+
+Stack:
+    integer values
+    last-in-first-out
+    grows dynamically
+
+Instruction pointer(ip):
+    points to next opcode byte
+    always valid or execution halts
+
+Execution loop
+    fetch opcode
+    decode instruction width
+    execute
+    advance ip
