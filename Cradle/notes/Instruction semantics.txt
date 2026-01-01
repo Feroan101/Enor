@@ -11,24 +11,45 @@ POP - 0x02:
 ADD - 0x03:
     consumes 2 operand bytes
     requires: stack size >= 2 
-    effect: pop 'val_1' pop 'val_2', push 'result' 
+    effect: pop 'val_1' pop 'val_2', push val_1 + val_2 
     ip += 1
 
-SUB - 0x04: //TODO
+SUB - 0x04: 
+    consumes 2 operand bytes
+    requires: stack size >= 2
+    effect: pop val_1, pop val_2, push val_1 - val_2
+    ip += 1
 
-MUL - 0x05: //TODO
+MUL - 0x05: 
+    consumes 2 operand bytes
+    requires: stack size >= 2
+    effect: pop val_1, pop val_2, push val_1 * val_2
+    ip += 1 
 
-DUP - 0x06: 
+DIV - 0x06 //TODO
+
+DUP - 0x07: 
     consumes 0 operand byte
     requires: stack pointer > 0
     effect: copies sp-1 in sp and moves sp += 1 (sp shouldnt decrease)
     ip += 1 
 
-JMP - 0x07: //TODO
+JMP - 0x08: 
     consumes 1 operand byte
     requires: 0 < 'target' <= 'limit'
     effect: moves sp to the 'target' byte
     ip = target
+
+JZ - 0x09: 
+    consumes 1 operand byte
+    requires: 0 < 'target' <= 'limit' and 'value != 0'
+    effect: moves sp to the 'target' byte
+    ip = target
+
+PRINT - 0x0A:
+    consumes 0 operand byte
+    effect: pop and print
+    ip += 1
 
 HALT - 0xFF:
     consumes 0 operands

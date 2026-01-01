@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#define EXEC_LIMIT 30 //change later
 #define REQUIRED(n) \
 if (ip + n > limit) { \
     printf("ERROR: no enough bytecode at ip:%d \n", ip); \
@@ -8,12 +9,17 @@ if (ip + n > limit) { \
 }
 
 typedef enum {
+    HALT = 255,
     PUSH = 1,
     POP = 2,
     ADD = 3,
-    DUP = 6,
-    JMP = 7,
-    HALT = 255
+    SUB = 4,
+    MUL = 5,
+    DIV = 6,
+    DUP = 7,
+    JMP = 8,
+    JZ = 9,
+    PRINT = 10
 } inst;
 
 typedef struct stack {
@@ -32,8 +38,11 @@ int push(stack *pm, size_t push_value);
 int pop(stack *pm, size_t *pop_value);
 
 int OP_ADD(stack *p);
+int OP_SUB(stack *p);
+int OP_MUL(stack *p);
 int OP_DUP(stack *pm);
 int OP_JMP(size_t *ip, long limit ,size_t target);
+int OP_JZ(stack *p, size_t *ip, long limit ,size_t target);
 
 int main() {
     FILE *file;
@@ -65,13 +74,19 @@ int main() {
 int stack_init(stack *pm, int cap) {
     pm->cap = cap;
     pm->sp = 0;
-    pm->data = malloc(sizeof(pm->data) * pm->cap);
+    pm->data = malloc(sizeof(int) * pm->cap);
     if (pm->data == NULL) return 3;
 }
 
 int read_op(stack *p, unsigned char *code, long limit) {
     size_t ip = 0;
+    int exec_count = 0;
     while (ip < limit) {
+        if (++exec_count > EXEC_LIMIT) {
+            printf("ERROR: execution limit exceeded\n");
+            return 200;
+        }
+
         switch(code[ip]) {
             case PUSH:
                 REQUIRED(2);
@@ -84,6 +99,18 @@ int read_op(stack *p, unsigned char *code, long limit) {
                 if (OP_ADD(p)) return 5;
                 ip++;
                 break;
+
+            case SUB:
+                REQUIRED(1);
+                if (OP_SUB(p)) return 5;
+                ip++;
+                break;
+
+            case MUL:
+                REQUIRED(1);
+                if (OP_SUB(p)) return 5;
+                ip++;
+                break;
             
             case DUP:
                 REQUIRED(1);
@@ -94,7 +121,12 @@ int read_op(stack *p, unsigned char *code, long limit) {
             case JMP:
                 REQUIRED(2);
                 if (OP_JMP(&ip, limit, code[ip + 1])) return 10;
-                ip+=2;
+                break;
+            
+            case JZ:
+                REQUIRED(2);
+                if (OP_JZ(p ,&ip, limit, code[ip + 1])) return 11;
+                break;
 
             case HALT:
                 REQUIRED(1);
@@ -161,6 +193,36 @@ int OP_ADD(stack *p) {
     return 0;
 }
 
+int OP_SUB(stack *p) {
+    size_t val_1, val_2;
+
+    if (pop(p, &val_1)) return 5;
+    if (pop(p, &val_2)) return 5;
+
+    //printf("val_1 = %d, val_2 = %d\n", val_1, val_2);
+
+    int result = val_2 - val_1;
+    printf("result: %d\n", result);
+
+    push(p, result);
+    return 0;
+}
+
+int OP_MUL(stack *p) {
+    size_t val_1, val_2;
+
+    if (pop(p, &val_1)) return 5;
+    if (pop(p, &val_2)) return 5;
+
+    //printf("val_1 = %d, val_2 = %d\n", val_1, val_2);
+
+    int result = val_1 * val_2;
+    printf("result: %d\n", result);
+
+    push(p, result);
+    return 0;
+}
+
 int OP_DUP(stack *pm) {
     if (pm->sp < 1) return 5;
     if (stackoverflow(pm)) return 4;
@@ -171,10 +233,32 @@ int OP_DUP(stack *pm) {
 }
 
 int OP_JMP(size_t *ip, long limit ,size_t target) {
-    //TODO: debug this shii
-    if (target < limit) return 4;
+    if (target > limit) return 4;
     if (target < 0) return 5;
 
-    //TODO: check if target is a valid opcode
+    //printf("JMP to %d\n", target);
     *ip = target;
+    return 0;
+}
+
+int OP_JZ(stack *p, size_t *ip, long limit ,size_t target) {
+    if (target > limit) return 4;
+    size_t value;
+
+    if (pop(p, &value)) return 5;
+    if (value != 0) {
+        *ip += 2;
+    } 
+    else {
+        //printf("JMP to %d\n", target);
+        *ip = target;
+    }
+    return 0;
+}
+
+int OP_PRINT(stack *p) {
+    size_t value;
+    if (pop(p, &value)) return 5;
+    printf("%zu\n", value);
+    return 0;
 }
