@@ -1,27 +1,38 @@
+NOP - 0x00: //no operation
+    consumes 0 operand byte
+    takes 1 byte
+    effect: moves ip by one without changing state
+    ip += 1
+
 PUSH - 0x01:
-    consumes 1 operand byte
+    consumes 0 operand byte
+    takes 2 bytes
     effect: pushes x into stack
     ip += 2
 
 POP - 0x02:
-    consumes 0 operand byte 
+    consumes 1 operand byte
+    takes 1 bytes
     effect: pops x from the stack and stores x at 'pop_value'
     ip += 1 
 
 ADD - 0x03:
     consumes 2 operand bytes
+    takes 1 bytes
     requires: stack size >= 2 
     effect: pop 'val_1' pop 'val_2', push val_1 + val_2 
     ip += 1
 
 SUB - 0x04: 
     consumes 2 operand bytes
+    takes 1 bytes
     requires: stack size >= 2
     effect: pop val_1, pop val_2, push val_1 - val_2
     ip += 1
 
 MUL - 0x05: 
     consumes 2 operand bytes
+    takes 1 bytes
     requires: stack size >= 2
     effect: pop val_1, pop val_2, push val_1 * val_2
     ip += 1 
@@ -30,24 +41,28 @@ DIV - 0x06 //TODO
 
 DUP - 0x07: 
     consumes 0 operand byte
+    takes 1 bytes
     requires: stack pointer > 0
     effect: copies sp-1 in sp and moves sp += 1 (sp shouldnt decrease)
     ip += 1 
 
-JMP - 0x08: 
+JMP - 0x08: //Jumps to a point in program
     consumes 1 operand byte
+    takes 2 bytes
     requires: 0 < 'target' <= 'limit'
     effect: moves sp to the 'target' byte
     ip = target
 
-JZ - 0x09: 
+JZ - 0x09: //Jumps until 0
     consumes 1 operand byte
+    takes 2 bytes
     requires: 0 < 'target' <= 'limit' and 'value != 0'
     effect: moves sp to the 'target' byte
     ip = target
 
 PRINT - 0x0A:
     consumes 0 operand byte
+    takes 1 byte
     effect: pop and print
     ip += 1
 

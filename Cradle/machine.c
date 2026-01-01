@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define EXEC_LIMIT 30 //change later
+#define EXEC_LIMIT 100 //change later
 #define REQUIRED(n) \
 if (ip + n > limit) { \
     printf("ERROR: no enough bytecode at ip:%d \n", ip); \
@@ -10,6 +10,7 @@ if (ip + n > limit) { \
 
 typedef enum {
     HALT = 255,
+    NOP = 0,
     PUSH = 1,
     POP = 2,
     ADD = 3,
@@ -43,11 +44,12 @@ int OP_MUL(stack *p);
 int OP_DUP(stack *pm);
 int OP_JMP(size_t *ip, long limit ,size_t target);
 int OP_JZ(stack *p, size_t *ip, long limit ,size_t target);
+int OP_PRINT(stack *p);
 
-int main() {
+int main(int argc, char *argv[]) {
     FILE *file;
     stack pmem;
-    file = fopen("program.bin","rb");
+    file = fopen(argv[1],"rb");
 
     fseek(file, 0, SEEK_END);
     long size = ftell(file);
@@ -65,7 +67,7 @@ int main() {
     }
 
     stack_init(&pmem, 4);
-    read_op(&pmem, buffer, size);
+    read_op(&pmem, buffer, size); //bug: probally size - 1
 
     free(buffer);
     free(pmem.data);
@@ -88,6 +90,11 @@ int read_op(stack *p, unsigned char *code, long limit) {
         }
 
         switch(code[ip]) {
+            case NOP:
+                REQUIRED(1);
+                ip++;
+                break;
+
             case PUSH:
                 REQUIRED(2);
                 if(push(p, code[ip + 1])) return 4;
@@ -108,7 +115,7 @@ int read_op(stack *p, unsigned char *code, long limit) {
 
             case MUL:
                 REQUIRED(1);
-                if (OP_SUB(p)) return 5;
+                if (OP_MUL(p)) return 5;
                 ip++;
                 break;
             
@@ -126,6 +133,12 @@ int read_op(stack *p, unsigned char *code, long limit) {
             case JZ:
                 REQUIRED(2);
                 if (OP_JZ(p ,&ip, limit, code[ip + 1])) return 11;
+                break;
+
+            case PRINT:
+                REQUIRED(1);
+                if (OP_PRINT(p)) return 5;
+                ip++;
                 break;
 
             case HALT:
@@ -187,8 +200,6 @@ int OP_ADD(stack *p) {
     //printf("val_1 = %d, val_2 = %d\n", val_1, val_2);
 
     int result = val_1 + val_2;
-    printf("result: %zu\n", result);
-
     push(p, result);
     return 0;
 }
@@ -202,8 +213,6 @@ int OP_SUB(stack *p) {
     //printf("val_1 = %d, val_2 = %d\n", val_1, val_2);
 
     int result = val_2 - val_1;
-    printf("result: %d\n", result);
-
     push(p, result);
     return 0;
 }
@@ -217,8 +226,6 @@ int OP_MUL(stack *p) {
     //printf("val_1 = %d, val_2 = %d\n", val_1, val_2);
 
     int result = val_1 * val_2;
-    printf("result: %d\n", result);
-
     push(p, result);
     return 0;
 }
@@ -242,7 +249,7 @@ int OP_JMP(size_t *ip, long limit ,size_t target) {
 }
 
 int OP_JZ(stack *p, size_t *ip, long limit ,size_t target) {
-    if (target > limit) return 4;
+    if (target > limit)  return 4;
     size_t value;
 
     if (pop(p, &value)) return 5;
