@@ -15,7 +15,10 @@ opcodes = {
         "JZ": 0x09, 
         "PRINT": 0x0A, 
         "LOAD": 0x0B,
-        "STORE": 0x0C
+        "STORE": 0x0C,
+        "SWAP": 0x0D,
+        "EQ": 0x0E,
+        "LT": 0x0F
         }
 
 code = []

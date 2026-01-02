@@ -1,3 +1,7 @@
+HALT - 0xFF:
+    consumes 0 operands
+    effect: ends the program
+
 NOP - 0x00: //no operation
     consumes 0 operand byte
     takes 1 byte
@@ -37,7 +41,12 @@ MUL - 0x05:
     effect: pop val_1, pop val_2, push val_1 * val_2
     ip += 1 
 
-DIV - 0x06 //TODO
+DIV - 0x06:
+    consumes 2 operand bytes
+    takes 1 bytes
+    requires: stack size >= 2
+    effect: pop val_1, pop val_2, push val_1 / val_2
+    ip += 1 
 
 DUP - 0x07: 
     consumes 0 operand byte
@@ -75,9 +84,27 @@ LOAD - 0x0B:
 STORE - 0x0C:
     consumes 1 operand byte
     takes 2 bytes
+    requires: index < MEM_SIZE
     effect: POP value from stack -> memory 
     ip += 2
 
-HALT - 0xFF:
-    consumes 0 operands
-    effect: ends the program
+SWAP - 0x0D:
+    consumes 2 operand byte but push 2 back hence 0 change
+    takes 1 byte
+    requires: stack >= 2
+    effect: swap val_1 and val_2
+    ip += 1
+
+EQ - 0x0E: //equal to?
+    consumes 2 operand byte
+    takes 1 byte
+    requires: stack >= 2
+    effect: checks if val_1 == val_2
+    ip += 1
+
+LT - 0x0F: //less than?
+    consumes 2 operand byte
+    takes 1 byte
+    requires: stack >= 2
+    effect: checks if val_2 < val_1 (top < top-1)
+    ip += 1

@@ -27,6 +27,9 @@ typedef enum {
     PRINT = 10,
     LOAD = 11,
     STORE = 12,
+    SWAP = 13,
+    EQ = 14,
+    LT = 15
 } inst;
 
 typedef struct stack {
@@ -55,6 +58,9 @@ int OP_JZ(stack *p, size_t *ip, size_t limit ,size_t target);
 int OP_PRINT(stack *p);
 int OP_LOAD(stack *p, int32_t *mem, int32_t index);
 int OP_STORE(stack *p, int32_t *mem, int32_t index);
+int OP_SWAP(stack *p);
+int OP_EQ(stack *p);
+int OP_LT(stack *p);
 
 int main(int argc, char *argv[]) {
     if (argc < 2) {
@@ -195,6 +201,24 @@ int OP_READ(stack *p, int32_t *memory, unsigned char *code, size_t limit) {
                 ip += 2;
                 break;
 
+            case SWAP:
+                REQUIRED(1);
+                if (OP_SWAP(p)) return 5;
+                ip++;
+                break;
+            
+            case EQ:
+                REQUIRED(1);
+                if (OP_EQ(p)) return 5;
+                ip++;
+                break;
+            
+            case LT:
+                REQUIRED(1);
+                if (OP_LT(p)) return 5;
+                ip++;
+                break;
+
             case HALT:
                 REQUIRED(1);
                 return 0;
@@ -296,7 +320,7 @@ int OP_DIV(stack *p) {
     if (pop(p, &val_2)) return 5;
 
     //printf("val_1 = %d, val_2 = %d\n", val_1, val_2);
-
+    if (val_2 == 0) return 12;
     int32_t result = val_2 / val_1;
     push(p, result);
     return 0;
@@ -354,4 +378,44 @@ int OP_STORE(stack *p, int32_t *mem, int32_t index) {
     pop(p, &value);
     mem[index] = value;
     return 0;                                                                                           
+}
+
+int OP_SWAP(stack *p) {
+    if (p->sp < 2) return 5;
+    int32_t val_1, val_2;
+
+    if (pop(p, &val_1)) return 5;
+    if (pop(p, &val_2)) return 5;
+
+    push(p, val_1);
+    push(p, val_2);
+    return 0;
+}
+
+int OP_EQ(stack *p) {
+    if (p->sp < 2) return 5;
+    int32_t val_1, val_2, result;
+
+    if (pop(p, &val_1)) return 5;
+    if (pop(p, &val_2)) return 5;
+
+    if (val_1 == val_2) result = 1;
+    else result = 0;
+
+    push(p, result);
+    return 0;
+}
+
+int OP_LT(stack *p) {
+    if (p->sp < 2) return 5;
+    int32_t val_1, val_2, result;
+
+    if (pop(p, &val_1)) return 5;
+    if (pop(p, &val_2)) return 5;
+
+    if (val_2 < val_1) result = 1;
+    else result = 0;
+
+    push(p, result);
+    return 0;
 }
