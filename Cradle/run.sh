@@ -18,7 +18,7 @@ if [ ! -f "./builds/$PROGRAM" ]; then
     exit 1
 fi
 
-echo "Running $PROGRAM on VM..."
+echo "Running $PROGRAM on Cradle..."
 "$EXEC" "$PROGRAM"
 
 #useage ./run.sh machine
