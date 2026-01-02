@@ -74,7 +74,10 @@ int main(int argc, char *argv[]) {
     if (!memory) return 1;
     memset(memory, 0, MEM_SIZE * sizeof(int32_t));
 
-    file = fopen(argv[1],"rb");
+    char program_path[512];
+    snprintf(program_path, sizeof(program_path), "./builds/%s", argv[1]);
+
+    file = fopen(program_path,"rb");
     if (!file) {
         perror("fopen");
         return 1;
@@ -105,6 +108,7 @@ int main(int argc, char *argv[]) {
     free(buffer);
     free(pmem.data);
     free(memory);
+    return(0);
 }
 
 int stack_init(stack *pm, size_t cap) {
@@ -314,14 +318,16 @@ int OP_MUL(stack *p) {
 }
 
 int OP_DIV(stack *p) {
-    int32_t val_1, val_2;
+    int32_t val_1, val_2, result;
 
     if (pop(p, &val_1)) return 5;
     if (pop(p, &val_2)) return 5;
 
     //printf("val_1 = %d, val_2 = %d\n", val_1, val_2);
     if (val_2 == 0) return 12;
-    int32_t result = val_2 / val_1;
+
+    if (val_1 == 0) result = val_2;
+    else result = val_2 / val_1;
     push(p, result);
     return 0;
 }

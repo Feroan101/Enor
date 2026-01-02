@@ -1,0 +1,20 @@
+#!/bin/bash
+
+BUILD="1.0"
+echo "Build $BUILD - $(date '+%Y-%m-%d %H:%M:%S')"
+
+python3 ./asm/assembler.py
+if [ $? -ne 0 ]; then
+    echo "Assembler failed"
+    exit 1
+fi
+
+gcc ./vm/machine.c -o ./builds/machine
+if [ $? -ne 0 ]; then
+    echo "VM compilation failed"
+    exit 1
+fi
+
+VM_SIZE=$(ls -lh ./builds/machine | awk '{print $5}')
+echo "VM compiled successfully ($VM_SIZE)"
+echo "Build complete"

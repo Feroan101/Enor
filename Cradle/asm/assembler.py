@@ -23,9 +23,8 @@ opcodes = {
 
 code = []
 
-with open("assembly.s", "r") as ass:
+with open("./programs/assembly.s", "r") as ass:
     content = ass.read()
-
 
 Lines = content.split()
 for line in Lines:
@@ -38,5 +37,5 @@ for line in Lines:
     
 #print(code)
 
-with open("program.bin", "wb") as f:
+with open("./builds/program.bin", "wb") as f:
     f.write(bytes(code))
