@@ -1,18 +1,6 @@
 # ONLY FOR TESTING
 # creating bin files
 
-#NOP - 0x00
-#PUSH - 0x01
-#POP - 0x02
-#ADD - 0x03
-#SUB - 0x04
-#MUL - 0x05
-#DIV - 0x06
-#DUP - 0x07
-#JMP - 0x08 
-#JZ - 0x09
-#PRINT = 0x0A
-
 opcodes = {
         "HALT": 0xFF,
         "NOP": 0x00, 
@@ -26,6 +14,8 @@ opcodes = {
         "JMP": 0x08, 
         "JZ": 0x09, 
         "PRINT": 0x0A, 
+        "LOAD": 0x0B,
+        "STORE": 0x0C
         }
 
 code = []
@@ -43,7 +33,7 @@ for line in Lines:
     else:
         print(line + " is a invalid instruction")
     
-print(code)
+#print(code)
 
 with open("program.bin", "wb") as f:
     f.write(bytes(code))

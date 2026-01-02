@@ -66,6 +66,18 @@ PRINT - 0x0A:
     effect: pop and print
     ip += 1
 
+LOAD - 0x0B: 
+    consumes 0 operand byte
+    takes 2 bytes
+    effect: PUSH value from memory -> stack
+    ip += 2
+
+STORE - 0x0C:
+    consumes 1 operand byte
+    takes 2 bytes
+    effect: POP value from stack -> memory 
+    ip += 2
+
 HALT - 0xFF:
     consumes 0 operands
     effect: ends the program
