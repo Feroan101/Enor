@@ -23,33 +23,58 @@ opcodes = {
 def read_source(file_path):
     with open(file_path, 'r') as asm:
         return (asm.readlines())    # reads asm from file
+   
+def label_pass(tokens):
+    symbol_table = {}
+    instruction_counter = 0
+    for token in tokens:
+        if (token["type"] == "instruction"):
+            instruction_counter += 1
+            continue
+        
+        name = token["name"]
+        line = token["line"]
+        for name in symbol_table: # checks for repeats
+            print(f"ERROR: label { name } at line { line } already exists")
+            return 3
 
-'''
-def tokenError(token): # idek wtf this shii is please ignore this fn
-    for t in token:
-        if (t["type"] == "label"):
-            token_oprand = t["operands"]
-            token_opcode = t["opcode"]
-            # garbage line
+        symbol_table[name] = instruction_counter
+        
+    return(symbol_table)
 
-            # no opcode and unknown opcode - validator
-            if (token_opcode not in opcodes):
-                print(f"ERROR: at line: {t["line"]}")
+def valid_pass(tokens, symbols):
+    for token in tokens:
+        if (token["type"] == "label"):
+            continue
+
+        opcode = token["opcode"]
+        line = token["line"]
+        operands = token["operands"]
+
+        # Check opcode exists
+        if (not opcode in opcodes):
+            print(f"ERROR: { opcode } is not a valid opcode at line { line }")
+            return 2
+
+        expected = opcodes[opcode]["operands"]
+        # Check operand count matches
+        if (len(operands) != expected):
+            print(f"ERROR: { opcode } expects { expected } operands but got { len(operands) } at line { line }")
+            return 2
+        
+        # check operand type
+        for op in operands:
+            if (op.lstrip('-').isdigit()):
+                continue
+            elif (op.isalnum() and op[0].isalpha()):
+                if (not op in symbols): # jmp and stuff
+                    print(f"ERROR: label { op } at line { line } doesnt exist")
+                    return 2
+            else:
+                print(f"ERROR: invalid operand '{ op }' at line { line }")
                 return 2
-
-            # check datatype - validator
-            for oprand in token_oprand:
-                if (type(oprand) is not int ):
-                    print(f"ERROR: at line: {t["line"]}")
-
-            if(len(line_operands) != opcodes[line_opcode]["operands"]):
-                print(f"ERROR: at line: {line_num}")
-                return 1
-
-            #check label repeats
-            #undefined labels   
-            #relative jump overflow
-'''
+        
+    return 0
 
 def tokenize(lines):
     tokenized_lines = []
@@ -73,7 +98,7 @@ def tokenize(lines):
                 print(f"ERROR: invaid use of labels at line {line_num}")
                 return 1
             
-            line_name = line[0][:-1]
+            line_name = line[0][:-1].lower()
             if (not line_name or not line_name.isalpha()):
                 print(f"ERROR: tried to fuck a label at line {line_num}")
                 return 1
@@ -84,7 +109,7 @@ def tokenize(lines):
         else: 
             line_type = 'instruction'
 
-        line_opcode = line[0] # opcode
+        line_opcode = line[0].upper() # opcode
         if (not line_opcode.isalpha()):
             print(f"ERROR: found garbage(you) at line: {line_num}")
             return 1
@@ -105,6 +130,8 @@ def main():
     source = read_source(f"../programs/{sys.argv[1]}") # change path later
     # print(source)
     tokens = tokenize(source)
+    symbol_table = label_pass(tokens)
+    valid_pass(tokens, symbol_table)
 
 if __name__ == '__main__':
     main()
