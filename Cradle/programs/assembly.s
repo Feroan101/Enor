@@ -1,5 +1,7 @@
 PUSH 9
-PUSH 0
-DIV
+loop: 
+    PUSH 0  
+    DIV 
 PRINT
+
 HALT

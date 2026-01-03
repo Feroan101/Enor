@@ -3,3 +3,5 @@
 Cradle/.vscode
 Cradle/docs/design
 Cradle/builds
+
+Cradle/asm/old_ass.py

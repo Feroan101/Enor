@@ -10,5 +10,5 @@ It executes Enor bytecode and defines the runtime model.
 
 ## Status
 
--*Still in development*.
--Things will evolve as the VM matures.
+*Still in development*.
+Things will evolve as the VM matures.
