@@ -48,7 +48,7 @@ static int vm_execute(stack *p, int32_t *memory, uint8_t *code, size_t limit) {
 
             case PUSH:
                 REQUIRED(3);
-                 int16_t val = code[ip + 1] | (code[ip + 2] << 8); // little endian
+                int16_t val = code[ip + 1] | (code[ip + 2] << 8); // little endian
                 if(push(p, (int32_t)val)) return 4;
                 ip += 3;
                 break;
