@@ -3,110 +3,126 @@ HALT - { "opcode": 0xFF:
     size: 1 byte
     effect: ends the program
 
-NOP - { "opcode": 0x00: //no operation
+NOP - 
+    "opcode": 0x00: //no operation
     immediate operands: none
     size: 1 byte
     effect: moves ip by one without changing state
     ip += 1
 
-PUSH - { "opcode": 0x01:
+PUSH - 
+    "opcode": 0x01:
     immediate operands: 3 byte (value)
     size: 4 bytes
     effect: pushes value into stack
     ip += 2
 
-POP - { "opcode": 0x02:
+POP - 
+    "opcode": 0x02:
     immediate operands: none
     size: 1 bytes
     requires: stack size >= 1
     effect: pops vakue from the stack and stores x at 'pop_value'
     ip += 1 
 
-ADD - { "opcode": 0x03:
+ADD - 
+    "opcode": 0x03:
     immediate operands: none
     size: 1 bytes
     requires: stack size >= 2 
     effect: pop 'val_1' pop 'val_2', push val_1 + val_2 
     ip += 1
 
-SUB - { "opcode": 0x04: 
+SUB - 
+    "opcode": 0x04: 
     immediate operands: none
     size: 1 bytes
     requires: stack size >= 2
     effect: pop val_1, pop val_2, push val_1 - val_2
     ip += 1
 
-MUL - { "opcode": 0x05: 
+MUL - 
+    "opcode": 0x05: 
     immediate operands: none
     size: 1 bytes
     requires: stack size >= 2
     effect: pop val_1, pop val_2, push val_1 * val_2
     ip += 1 
 
-DIV - { "opcode": 0x06:
+DIV - 
+    "opcode": 0x06:
     immediate operands: none
     size: 1 bytes
     requires: val_1 != 0
     effect: pop val_1, pop val_2, push val_1 / val_2
     ip += 1 
 
-DUP - { "opcode": 0x07: 
+DUP - 
+    "opcode": 0x07: 
     immediate operands: none
     size: 1 bytes
     requires: stack size >= 1
     effect: copies sp-1 in sp and moves sp += 1 (sp shouldnt decrease)
     ip += 1 
 
-JMP - { "opcode": 0x08: //Jumps to a point in program
+JMP - 
+    "opcode": 0x08: //Jumps to a point in program
     immediate operands: 2 byte (absolute byte offset)
     size: 3 bytes
     requires: 0 < 'target' <= 'limit'
     effect: moves ip to the 'target' byte
     ip = target
 
-JZ - { "opcode": 0x09: //Jumps until 0
+JZ - 
+    "opcode": 0x09: //Jumps until 0
     immediate operands: 2 byte (absolute byte offset)
     size: 3 bytes
     requires: 0 < 'target' <= 'limit'
     effect: moves ip to the 'target' byte until 0
     ip = target
 
-PRINT - { "opcode": 0x0A:
+PRINT - 
+    "opcode": 0x0A:
     immediate operands: none
     size: 1 byte
     immediate operands: 1 byte (target address)
     effect: pop and print
     ip += 1
 
-LOAD - { "opcode": 0x0B:
+LOAD - 
+    "opcode": 0x0B:
     immediate operands: 2 byte (memory index)
     size: 3 bytes
     requires: index < MEM_SIZE
     effect: push memory[index] onto stack
     ip += 2
 
-STORE - { "opcode": 0x0C:
+STORE - 
+    "opcode": 0x0C:
     immediate operands: 2 byte (memory index)
     size: 3 bytes
     requires: stack size >= 1, index < MEM_SIZE
     effect: pop value and store it in memory[index]
     ip += 2
 
-SWAP - { "opcode": 0x0D:
+SWAP - 
+    "opcode": 0x0D:
     immediate operands: none
     size: 1 byte
     requires: stack size >= 2
     effect: swap top two stack values
     ip += 1
 
-EQ - { "opcode": 0x0E: //equal to?
+EQ - 
+    "opcode": 0x0E: //equal to?
     immediate operands: none
     size: 1 byte
     requires: stack >= 2
     effect: checks if val_1 == val_2 and o/p 0/1
     ip += 1
 
-LT - { "opcode": 0x0F: //less than?
+LT - 
+    "opcode": 0x0F: //less than?
     immediate operands: none
     size: 1 byte
     requires: stack >= 2

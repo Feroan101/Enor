@@ -10,7 +10,6 @@ fi
 PROGRAM="$1"
 EXEC="./builds/machine"
 ASM="./asm/assembler.py"
-OUT="./builds"
 
 if [ "$TESTING" -eq 1 ]; then
     SRC_DIR="./tests"
@@ -20,7 +19,7 @@ else
 fi
 
 INPUT="$SRC_DIR/$PROGRAM.asm"
-OUTPUT="./builds/$PROGRAM.bin"
+OUTPUT="./builds/asm/$PROGRAM.bin"
 
 if [ ! -f "$EXEC" ]; then
     echo "VM not found. Please build first."
@@ -41,4 +40,4 @@ if [ $? -ne 0 ]; then
 fi
 
 echo "Running $PROGRAM on Cradle..."
-"$EXEC" "$OUT/$PROGRAM.bin"
+"$EXEC" "$OUTPUT"
