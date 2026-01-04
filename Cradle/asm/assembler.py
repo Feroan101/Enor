@@ -23,12 +23,78 @@ opcodes = {
 def read_source(file_path):
     with open(file_path, 'r') as asm:
         return (asm.readlines())    # reads asm from file
-   
-def label_pass(tokens):
+
+def emit_bytecode(tokens, path):
+    bytecode = bytearray()
+    for token in tokens:
+        if (token["type"] == "label"):
+            continue
+        
+        opcode = token["opcode"]
+        operands = token["operands"]
+
+        opcode_byte = opcodes[opcode]["opcode"]
+        bytecode.append(opcode_byte)
+
+        for op in operands:
+            value = int(op)
+            bytecode.extend(value.to_bytes(2, byteorder="little", signed=True))
+
+    with open(path, 'wb') as out:
+        out.write(bytecode)
+        
+    print(f"code emitted at {path}")
+        
+def resolve_operands(tokens, symbols): # turn labels in JMPs to byte and operands to int
+    for token in tokens:
+        if token["type"] != "instruction":
+            continue
+
+        opcode = token["opcode"]
+        operands = token["operands"]
+        resolved = []
+
+        for op in operands:
+            # Immediate integer
+            if op.lstrip('-').isdigit():
+                resolved.append(int(op))
+                continue
+            
+            # jump labels
+            if opcode not in ("JMP", "JZ"):
+                print(f"ERROR: label operand not allowed for {opcode} at line {token['line']}")
+                return 4
+            
+            if (op not in symbols):
+                print(f"ERROR: undefined label '{op}' at line {token['line']}")
+                return 4
+            
+            offset = symbols[opcode] - (token["ip"] + 1) # offset = target_ip - (current_ip + instruction_size)
+            resolved.append(offset)
+
+        token["operands"] = resolved
+
+    return 0
+
+
+def address_pass(tokens): # assign physical byte index
+    ip = 0
+    for token in tokens:
+        if token["type"] != "instruction":
+            continue
+
+        token["ip"] = ip
+        operand_count = 1 + opcodes[token["opcode"]]["operands"]   
+        instruction_size = 1 + (operand_count * 2)
+        ip += instruction_size
+
+    return 0
+
+def label_pass(tokens): # creates a symbol table for label lookup
     symbol_table = {}
     instruction_counter = 0
     for token in tokens:
-        if (token["type"] == "instruction"):
+        if (token["type"] == "instruction"): # ignores labels and inc only instructions
             instruction_counter += 1
             continue
         
@@ -38,13 +104,13 @@ def label_pass(tokens):
             print(f"ERROR: label { name } at line { line } already exists")
             return 3
 
-        symbol_table[name] = instruction_counter
+        symbol_table[name] = instruction_counter # {label_name = ic}
         
     return(symbol_table)
 
-def valid_pass(tokens, symbols):
+def valid_pass(tokens, symbols): # checks instruction
     for token in tokens:
-        if (token["type"] == "label"):
+        if (token["type"] == "label"): # ignore labels
             continue
 
         opcode = token["opcode"]
@@ -81,9 +147,9 @@ def tokenize(lines):
     source_line = 1
 
     for line in lines:
-        line = line.strip()         # rm whitespaces 
-        line = line.split("//", 1)[0]  # rm comments (//)
-        line = line.split()         # tokenize
+        line = line.strip()             # rm whitespaces 
+        line = line.split("//", 1)[0]   # rm comments (//)
+        line = line.split()             # tokenize
 
         if not line: # checks empty line
             source_line += 1
@@ -98,8 +164,8 @@ def tokenize(lines):
                 print(f"ERROR: invaid use of labels at line {line_num}")
                 return 1
             
-            line_name = line[0][:-1].lower()
-            if (not line_name or not line_name.isalpha()):
+            line_name = line[0][:-1].lower() # label
+            if (not line_name or not line_name.isalpha()): # checks label is empty or not alpha
                 print(f"ERROR: tried to fuck a label at line {line_num}")
                 return 1
   
@@ -115,7 +181,7 @@ def tokenize(lines):
             return 1
 
         # wrong operand count
-        line_operands = line[1:]
+        line_operands = line[1:] # operands
 
         token = dict(type = line_type, opcode = line_opcode, operands = line_operands, line = line_num)
         tokenized_lines.append(token)
@@ -128,10 +194,15 @@ def main():
         return 1
     
     source = read_source(f"../programs/{sys.argv[1]}") # change path later
-    # print(source)
-    tokens = tokenize(source)
-    symbol_table = label_pass(tokens)
-    valid_pass(tokens, symbol_table)
+    output = f"../builds/{sys.argv[1].split('.')[0]}"
+
+    tokens = tokenize(source)           # tokenize asm (seperate values)
+    symbol_table = label_pass(tokens)   # generate symbol_tabel
+
+    valid_pass(tokens, symbol_table)            # checks instruction
+    address_pass(tokens)                        # assign physical byte index
+    resolve_operands(tokens, symbol_table)      # turns operands into actual values (instead of list) and turn labels in JMPs to a byte offset
+    emit_bytecode(tokens, output)               # outta this fucking hellhole
 
 if __name__ == '__main__':
     main()
