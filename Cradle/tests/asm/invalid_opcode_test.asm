@@ -1,0 +1,3 @@
+PUSH 1
+FOO
+HALT

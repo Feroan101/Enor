@@ -1,4 +1,5 @@
 #!/bin/bash
+shopt -s nullglob
 
 ASM="./asm/assembler.py"
 EXEC="./builds/machine"
@@ -9,11 +10,13 @@ if [ ! -f "$EXEC" ]; then
     exit 1
 fi
 
-for file in "$TEST_DIR"/*.s; do
-    name=$(basename "$file" .s)
-    output="./tests/expected/$name.bin"
+for file in "$TEST_DIR"/*.asm; do
+    name=$(basename "$file".s)
+    output="./tests/bin/$name.bin"
 
+    echo "------------------------"
     echo "TEST: $name"
+
 
     python3 "$ASM" "$file" "$output"
     if [ $? -ne 0 ]; then

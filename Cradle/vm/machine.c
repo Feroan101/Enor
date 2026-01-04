@@ -63,7 +63,7 @@ int OP_EQ(stack *p);
 int OP_LT(stack *p);
 
 int main(int argc, char *argv[]) {
-    if (argc < 2) {
+    if (argc != 2) {
         printf("Usage: %s <bytecode_file>\n", argv[0]);
         return 1;
     }
@@ -74,10 +74,10 @@ int main(int argc, char *argv[]) {
     if (!memory) return 1;
     memset(memory, 0, MEM_SIZE * sizeof(int32_t));
 
-    char program_path[512];
-    snprintf(program_path, sizeof(program_path), "./builds/%s", argv[1]);
+    // char program_path[512];
+    // snprintf(program_path, sizeof(program_path), "./builds/%s", argv[1]);
 
-    file = fopen(program_path,"rb");
+    file = fopen(argv[1],"rb");
     if (!file) {
         perror("fopen");
         return 1;

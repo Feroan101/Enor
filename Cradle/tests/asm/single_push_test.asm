@@ -1,0 +1,3 @@
+PUSH 42
+PRINT
+HALT
