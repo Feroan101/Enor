@@ -1,4 +1,5 @@
 from opcodes import opcodes
+import os
 
 def emit_bytecode(tokens, path):
     bytecode = bytearray()
@@ -15,6 +16,8 @@ def emit_bytecode(tokens, path):
         for op in operands:
             value = int(op)
             bytecode.extend(value.to_bytes(2, byteorder="little", signed=True))
+
+    os.makedirs(os.path.dirname(path), exist_ok=True)
 
     with open(path, 'wb') as out:
         out.write(bytecode)
