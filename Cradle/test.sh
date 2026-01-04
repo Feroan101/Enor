@@ -67,6 +67,39 @@ for file in "$FAIL_DIR"/*.asm; do
     echo "Failed as expected"
 done
 
+VM_PASS_DIR="./tests/vm/pass"
+
+echo
+echo "===== VM PASS TESTS ====="
+
+for file in "$VM_PASS_DIR"/*.asm; do
+    name=$(basename "$file" .asm)
+    output="$BIN_DIR/$name.bin"
+
+    echo "------------------------"
+    echo "VM PASS: $name"
+
+    python3 "$ASM" "$file" "$output"
+    asm_rc=$?
+
+    if [ $asm_rc -ne 0 ]; then
+        echo "❌ Assembler failed (unexpected)"
+        failures=$((failures + 1))
+        continue
+    fi
+
+    "$EXEC" "$output"
+    vm_rc=$?
+
+    if [ $vm_rc -ne 0 ]; then
+        echo "❌ Runtime failed (unexpected)"
+        failures=$((failures + 1))
+        continue
+    fi
+
+    echo "Runtime succeeded as expected"
+done
+
 VM_FAIL_DIR="./tests/vm/fail"
 
 echo
