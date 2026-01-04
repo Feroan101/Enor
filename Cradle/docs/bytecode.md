@@ -19,7 +19,7 @@ The **instruction pointer (IP)** points to the current byte in the bytecode stre
 |------------|--------|--------------------|------------|--------|
 | **NOP** | `0x00` | None | 1 byte | No operation; IP += 1 |
 | **HALT** | `0xFF` | None | 1 byte | Ends program execution |
-| **PUSH** | `0x01` | 3 bytes (value) | 4 bytes | Push value onto stack; IP += 4 |
+| **PUSH** | `0x01` | 2 bytes (value) | 3 bytes | Push value onto stack; IP += 3 |
 | **POP** | `0x02` | None | 1 byte | Pop top value from stack; IP += 1 |
 | **ADD** | `0x03` | None | 1 byte | Pop two values, push sum; IP += 1 |
 | **SUB** | `0x04` | None | 1 byte | Pop two values, push difference; IP += 1 |
@@ -39,7 +39,7 @@ The **instruction pointer (IP)** points to the current byte in the bytecode stre
 
 ## Operand Encoding
 
-- **PUSH values:** 3-byte signed integers, little-endian  
+- **PUSH values:** 2-byte signed integers, little-endian  
 - **JMP / JZ targets:** 2-byte unsigned integers, little-endian  
 - **LOAD / STORE memory indices:** 2-byte unsigned integers, little-endian  
 
