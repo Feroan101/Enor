@@ -76,6 +76,7 @@ int main(int argc, char *argv[]) {
 
     // char program_path[512];
     // snprintf(program_path, sizeof(program_path), "./builds/%s", argv[1]);
+    //printf("%s", argv[1]);
 
     file = fopen(argv[1],"rb");
     if (!file) {
@@ -103,12 +104,15 @@ int main(int argc, char *argv[]) {
         return 1;
     }
 
-    OP_READ(&pmem, memory, buffer, size); 
+    int rc = 0;
+    if (OP_READ(&pmem, memory, buffer, size)) {
+        rc = 100; 
+    }
 
     free(buffer);
     free(pmem.data);
     free(memory);
-    return(0);
+    return(rc);
 }
 
 int stack_init(stack *pm, size_t cap) {
@@ -279,14 +283,14 @@ int OP_POP(stack *p) {
 }
 
 int OP_ADD(stack *p) {
-    int32_t val_1, val_2;
+    int32_t val_1, val_2, result;
 
     if (pop(p, &val_1)) return 5;
     if (pop(p, &val_2)) return 5;
 
     //printf("val_1 = %d, val_2 = %d\n", val_1, val_2);
 
-    int32_t result = val_1 + val_2;
+    result = val_1 + val_2;
     push(p, result);
     return 0;
 }

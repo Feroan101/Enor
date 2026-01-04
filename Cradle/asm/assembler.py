@@ -194,15 +194,32 @@ def main():
         sys.exit(1)
     
     source = read_source(sys.argv[1])
+    if source is None:
+        return 1
+    
     output = sys.argv[2]
 
-    tokens = tokenize(source)           # tokenize asm (seperate values)
-    symbol_table = label_pass(tokens)   # generate symbol_tabel
+    tokens = tokenize(source)             # tokenize asm (seperate values)
 
-    valid_pass(tokens, symbol_table)            # checks instruction
-    address_pass(tokens)                        # assign physical byte index
-    resolve_operands(tokens, symbol_table)      # turns operands into actual values (instead of list) and turn labels in JMPs to a byte offset
-    emit_bytecode(tokens, output)               # outta this fucking hellhole
+    symbol_table = label_pass(tokens)   # generate symbol_tabel
+    if symbol_table == 3:
+        return symbol_table
+
+    rc = valid_pass(tokens, symbol_table)            # checks instruction
+    if rc != 0:
+        return rc
+    
+    rc = address_pass(tokens)                        # assign physical byte index
+    if rc != 0:
+        return rc
+    
+    rc = resolve_operands(tokens, symbol_table)      # turns operands into actual values (instead of list) and turn labels in JMPs to a byte offset
+    if rc != 0:
+        return rc
+    
+    rc = emit_bytecode(tokens, output)               # outta this fucking hellhole
+    if rc != 0:
+        return rc
 
     return 0
 

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-TESTING=0   # set to 1 for test mode
+TESTING=0   # set to 1 for test mode (never set it to 1, use ./test.sh) [REMOVE LATER]
 
 if [ $# -lt 1 ]; then
     echo "Usage: $0 <program_name>"
@@ -10,6 +10,7 @@ fi
 PROGRAM="$1"
 EXEC="./builds/machine"
 ASM="./asm/assembler.py"
+OUT="./builds"
 
 if [ "$TESTING" -eq 1 ]; then
     SRC_DIR="./tests"
@@ -18,7 +19,7 @@ else
     SRC_DIR="./programs"
 fi
 
-INPUT="$SRC_DIR/$PROGRAM.s"
+INPUT="$SRC_DIR/$PROGRAM.asm"
 OUTPUT="./builds/$PROGRAM.bin"
 
 if [ ! -f "$EXEC" ]; then
@@ -40,4 +41,4 @@ if [ $? -ne 0 ]; then
 fi
 
 echo "Running $PROGRAM on Cradle..."
-"$EXEC" "$PROGRAM.bin"
+"$EXEC" "$OUT/$PROGRAM.bin"
