@@ -18,7 +18,7 @@ The Cradle assembler is the tool that converts Enor source code into Cradle VM b
 
 - **Instructions**: one per line  
 - **Operands**: follow the instruction, separated by spaces  
-- **Comments**: start with `;` and extend to the end of the line  
+- **Comments**: start with `//` and extend to the end of the line  
 - **Labels**: optional, defined by `label_name:` and used as jump targets  
 
 Example:
