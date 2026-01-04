@@ -1,13 +1,7 @@
 #!/bin/bash
 
-BUILD="1.0"
+BUILD="V0.1"
 echo "Build $BUILD - $(date '+%Y-%m-%d %H:%M:%S')"
-
-python3 ./asm/assembler.py
-if [ $? -ne 0 ]; then
-    echo "Assembler failed"
-    exit 1
-fi
 
 gcc ./vm/machine.c -o ./builds/machine
 if [ $? -ne 0 ]; then

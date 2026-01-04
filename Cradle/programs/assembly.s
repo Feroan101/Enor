@@ -1,7 +1,6 @@
 PUSH 9
-loop: 
-    PUSH 0  
-    DIV 
+PUSH 5 
+MUl
 PRINT
 
 HALT

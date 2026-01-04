@@ -43,7 +43,7 @@ def emit_bytecode(tokens, path):
     with open(path, 'wb') as out:
         out.write(bytecode)
         
-    print(f"code emitted at {path}")
+    # print(f"code emitted at {path}")
         
 def resolve_operands(tokens, symbols): # turn labels in JMPs to byte and operands to int
     for token in tokens:
@@ -189,12 +189,12 @@ def tokenize(lines):
     return(tokenized_lines)
 
 def main():
-    if len(sys.argv) < 1:
-        print(f"useage:python3 {sys.argv[0]} <assembly.asm>")
-        return 1
+    if len(sys.argv) != 3:
+        print("usage: assembler <input.asm> <output.bin>")
+        sys.exit(1)
     
-    source = read_source(f"../programs/{sys.argv[1]}") # change path later
-    output = f"../builds/{sys.argv[1].split('.')[0]}"
+    source = read_source(sys.argv[1])
+    output = sys.argv[2]
 
     tokens = tokenize(source)           # tokenize asm (seperate values)
     symbol_table = label_pass(tokens)   # generate symbol_tabel
@@ -203,6 +203,8 @@ def main():
     address_pass(tokens)                        # assign physical byte index
     resolve_operands(tokens, symbol_table)      # turns operands into actual values (instead of list) and turn labels in JMPs to a byte offset
     emit_bytecode(tokens, output)               # outta this fucking hellhole
+
+    return 0
 
 if __name__ == '__main__':
     main()
