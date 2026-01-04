@@ -140,9 +140,10 @@ int OP_READ(stack *p, int32_t *memory, unsigned char *code, size_t limit) {
                 break;
 
             case PUSH:
-                REQUIRED(2);
-                if(push(p, code[ip + 1])) return 4;
-                ip+=2;
+                REQUIRED(3);
+                 int16_t val = code[ip + 1] | (code[ip + 2] << 8); // little endian
+                if(push(p, (int32_t)val)) return 4;
+                ip += 3;
                 break;
             
             case POP:
