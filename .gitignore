@@ -5,5 +5,6 @@ Cradle/docs/design
 Cradle/builds
 
 Cradle/asm/old_ass.py
+Cradle/asm/__pycache__
 
 Cradle/tests/bin
