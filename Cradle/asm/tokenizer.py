@@ -26,7 +26,7 @@ def tokenize(lines):
             
             line_name = line[0][:-1].lower() # label
             if (not line_name or not line_name.isalpha()): # checks label is empty or not alpha
-                print(f"ERROR: tried to fuck a label at line {line_num}")
+                print(f"ERROR: invalid label name at line {line_num}")
                 return 1
   
             token = dict(type= line_type, name = line_name, line = line_num)

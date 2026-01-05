@@ -10,8 +10,7 @@
 
 #define REQUIRED(n) \
 if (ip + n > limit) { \
-    printf("ERROR: no enough bytecode at ip:%zu \n", ip); \
-    return 8; \
+    return VM_ERR_OUT_OF_BOUNDS; \
 }
 
 static vm_errors vm_execute(stack *p, int32_t *memory, uint8_t *code, size_t limit);
@@ -99,8 +98,9 @@ static vm_errors vm_execute(stack *p, int32_t *memory, uint8_t *code, size_t lim
             
             case JMP:
                 REQUIRED(3);
-                err = OP_JMP(&ip, limit, code[ip + 1]);
+                err = OP_JMP(limit, code[ip + 1]);
                 if (err) return err;
+                else ip = code[ip + 1];
                 break;
             
             case JZ:

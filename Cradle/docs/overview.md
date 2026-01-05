@@ -85,3 +85,5 @@ If something exists, it exists for a reason.
 - [Bytecode Format](bytecode.md)
 - [Assembler](assembler.md)
 - [Glossary](glossary.md)
+
+Internal design notes and implementation details live in `internal/`

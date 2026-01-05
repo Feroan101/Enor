@@ -16,6 +16,8 @@ def main():
     output = sys.argv[2]
 
     tokens = tokenize(source)             # tokenize asm (seperate values)
+    if tokens == 1:
+        return tokens
 
     symbol_table = label_pass(tokens)   # generate symbol_tabel
     if symbol_table == 3:

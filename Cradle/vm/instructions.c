@@ -67,11 +67,11 @@ vm_errors OP_DUP(stack *pm) {
     return VM_OK;
 }
 
-vm_errors OP_JMP(size_t *ip, size_t limit ,size_t target) {
+vm_errors OP_JMP( size_t limit ,size_t target) {
     if (target >= limit) return VM_ERR_INVALID_JUMP;
 
     //printf("JMP to %d\n", target);
-    *ip = target;
+    // ip is handled in vm.c
     return VM_OK;
 }
 

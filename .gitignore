@@ -2,7 +2,6 @@
 
 Cradle/.vscode
 Cradle/docs/design
-Cradle/docs/Instruction_semantics.txt
 Cradle/builds
 
 Cradle/asm/old_ass.py
