@@ -157,6 +157,13 @@ static vm_errors vm_execute(stack *p, int32_t *memory, uint8_t *code, size_t lim
                 ip++;
                 break;
 
+            case JNZ: {
+                REQUIRED(3);
+                uint16_t target = code[ip + 1] | (code[ip + 2] << 8);
+                if (OP_JNZ(p, &ip, limit, target)) return VM_ERR_INVALID_JUMP;
+                break;
+            }
+
             case HALT:
                 REQUIRED(1);
                 return VM_OK;

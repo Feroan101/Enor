@@ -18,7 +18,8 @@ typedef enum {
     STORE = 12,
     SWAP = 13,
     EQ = 14,
-    LT = 15
+    LT = 15,
+    JNZ = 16
 } inst;
 
 #endif

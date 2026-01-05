@@ -138,3 +138,20 @@ vm_errors OP_LT(stack *p) {
     push(p, result);
     return VM_OK;
 }
+
+vm_errors OP_JNZ(stack *p, size_t *ip, size_t limit ,size_t target) {
+    if (target >= limit)  return VM_ERR_INVALID_JUMP;
+    int32_t value;
+
+    if (pop(p, &value)) return VM_ERR_STACK_UNDERFLOW; 
+
+    if (value != 0) {
+        if (target >= limit) return VM_ERR_INVALID_JUMP;
+        // printf("JZ to %zu\n", target);
+        *ip = target;
+    } else {
+        *ip += 3;  
+    }
+
+    return VM_OK;
+}

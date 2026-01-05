@@ -15,5 +15,6 @@ opcodes = {
     "STORE":{ "opcode": 0x0C, "operands": 1},
     "SWAP": { "opcode": 0x0D, "operands": 0},
     "EQ":   { "opcode": 0x0E, "operands": 0},
-    "LT":   { "opcode": 0x0F, "operands": 0}
+    "LT":   { "opcode": 0x0F, "operands": 0},
+    "JNZ":  { "opcode": 0x10, "operands": 1}
 }

@@ -15,7 +15,7 @@ FACTORIAL:
     LOAD 0         // push n
     PUSH 0
     EQ             // push (n == 0)
-    JZ END         // consumes condition
+    JNZ END         // consumes condition
 
     // result = result * n
     LOAD 1         // push result

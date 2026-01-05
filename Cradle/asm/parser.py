@@ -14,7 +14,7 @@ def resolve_operands(tokens, symbols): # turn labels in JMPs to byte and operand
                 continue
             
             # Jump labels
-            if opcode not in ("JMP", "JZ"):
+            if opcode not in ("JMP", "JZ", "JNZ"):
                 print(f"ERROR: label operand not allowed for {opcode} at line {token['line']}")
                 return 4
             

@@ -19,5 +19,6 @@ vm_errors OP_PRINT(stack *p);
 vm_errors OP_SWAP(stack *p);
 vm_errors OP_EQ(stack *p);
 vm_errors OP_LT(stack *p);
+vm_errors OP_JNZ(stack *p, size_t *ip, size_t limit ,size_t target);
 
 #endif
