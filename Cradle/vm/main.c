@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "vm.h"
+#include "errors.h"
 
 int main(int argc, char *argv[]) {
     if (argc != 2) {
@@ -24,9 +25,10 @@ int main(int argc, char *argv[]) {
     fread(buffer, 1, size, file);
     fclose(file);
 
-    int rc = vm_run(buffer, size);
+    vm_errors rc = vm_run(buffer, size);
+    if (rc) fprintf(stderr, "Cradle %s\n", vm_error_string(rc));
 
     free(buffer);
-    return rc;
+    return (int)rc;
 }
 

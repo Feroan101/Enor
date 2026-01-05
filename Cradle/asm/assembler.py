@@ -37,7 +37,7 @@ def main():
     if rc != 0:
         return rc
 
-    return 0
+    return VM_OK
 
 if __name__ == '__main__':
     sys.exit(main())

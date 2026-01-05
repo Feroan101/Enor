@@ -5,8 +5,9 @@ INCLUDES = -Ivm/include
 SRC = vm/main.c \
       vm/vm.c \
       vm/stack.c \
-      vm/memory.c \
-      vm/instructions.c
+      vm/arena.c \
+      vm/instructions.c \
+	  vm/errors.c
 
 OBJ = $(SRC:vm/%.c=builds/obj/%.o)
 

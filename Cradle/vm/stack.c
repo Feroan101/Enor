@@ -1,47 +1,43 @@
 #include "stack.h"
-#include <stdio.h>
-#include <stdlib.h>
 
-int stack_init(stack *pm, size_t cap) {
+
+vm_errors stack_init(stack *pm, size_t cap) {
     pm->cap = cap;
     pm->sp = 0;
     pm->data = malloc(sizeof(int32_t) * pm->cap);
-    if (!pm->data) return 3;
-    return 0;
+    if (!pm->data) return VM_ERR_OUT_OF_MEMORY;
+    return VM_OK;
 }
 
-int stackoverflow(stack *pm) {
+vm_errors stackoverflow(stack *pm) {
     if (pm->cap == pm->sp) {
-        int *tmp = realloc(pm->data, sizeof(int32_t) * pm->cap * 2);
+        int32_t *tmp = realloc(pm->data, sizeof(int32_t) * pm->cap * 2);
         if (tmp == NULL) {
-            printf("couldnt allocate more memory");
-            return 4;
+            return VM_ERR_STACK_OVERFLOW;
         }
         pm->cap = pm->cap * 2;
         pm->data = tmp;
     }
-    return 0;
+    return VM_OK;
 }
 
-int stackunderflow(stack *pm) {
+vm_errors stackunderflow(stack *pm) {
     if (pm->sp <= 0) {
-        printf("trying to access memory that is not avalible\n");
         pm->sp = 0;
-        return 5;
+        return VM_ERR_STACK_UNDERFLOW;
     }
-    return 0;
+    return VM_OK;
 }
 
-int push(stack *pm, int32_t push_value) {
-    if (stackoverflow(pm)) return 4; 
-
+vm_errors push(stack *pm, int32_t push_value) {
+    if (stackoverflow(pm)) return VM_ERR_STACK_OVERFLOW; 
     pm->data[pm->sp++] = push_value;
-    return 0;
+    return VM_OK;
 }
 
-int pop(stack *pm, int32_t *pop_value) {
-    if (stackunderflow(pm)) return 5;
+vm_errors pop(stack *pm, int32_t *pop_value) {
+    if (stackunderflow(pm)) return VM_ERR_STACK_UNDERFLOW;
 
     *pop_value = pm->data[--pm->sp];
-    return 0;
+    return VM_OK;
 }
