@@ -18,8 +18,8 @@ else
     SRC_DIR="./programs"
 fi
 
-INPUT="$SRC_DIR/$PROGRAM.asm"
-OUTPUT="./builds/asm/$PROGRAM.bin"
+INPUT="$SRC_DIR/$PROGRAM.ens"
+OUTPUT="./builds/enb/$PROGRAM.enb"
 
 if [ ! -f "$EXEC" ]; then
     echo "VM not found. Please build first."

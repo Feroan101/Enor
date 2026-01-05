@@ -3,6 +3,6 @@
 echo "Cleaning build artifacts..."
 
 rm -rf ./builds/*
-rm -rf ./tests/bin/*.bin
+rm -rf ./tests/bin/*.enb
 
 echo "Clean complete."

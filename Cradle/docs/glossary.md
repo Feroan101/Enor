@@ -51,6 +51,11 @@ Instruction that stops execution immediately.
 **IP Offset**  
 The number of bytes the instruction pointer moves after executing an instruction. Depends on the instruction size.
 
+## Extentions
+
+**.ens** – Enor assembly source files containing instructions and labels for the Cradle VM.  
+**.enb** – Enor bytecode files generated from `.ens` sources, ready to be executed on Cradle.
+
 ---
 
 ## Notes

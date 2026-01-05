@@ -42,6 +42,7 @@ instruction pointer (IP).
 |--------|--------|--------------------|--------------|--------------|--------|
 | JMP | `0x08` | 2 bytes (target) | 3 | `0 < target ≤ limit` | Sets IP to target byte offset. |
 | JZ | `0x09` | 2 bytes (target) | 3 | `0 < target ≤ limit` | Jumps to target if top of stack is zero. |
+| JNZ | `0x10` | 2 bytes (target) | 3 | `0 < target ≤ limit` | Jumps to target if top of stack is non-zero. |
 
 ---
 

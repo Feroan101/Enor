@@ -1,13 +1,13 @@
 # Cradle Assembler
 
-The Cradle assembler is the tool that converts Enor source code into Cradle VM bytecode. It reads `.asm` files containing human-readable instructions and produces a binary bytecode file that the VM can execute.
+The Cradle assembler is the tool that converts Enor source code into Cradle VM bytecode. It reads `.ens` files containing human-readable instructions and produces a binary bytecode file `.enb` that the VM can execute.
 
 ---
 
 ## Overview
 
-- Input: Enor assembly file (`.asm`) containing instructions like `PUSH 3`, `ADD`, `JMP 0x10`  
-- Output: Binary bytecode file (`.bin`) ready to run on the Cradle VM  
+- Input: Enor assembly file (`.ens`) containing instructions like `PUSH 3`, `ADD`, `JMP 0x10`  
+- Output: Binary bytecode file (`.enb`) ready to run on the Cradle VM  
 - The assembler resolves **opcodes**, **immediate operands**, and **labels** (if present) into proper byte sequences.  
 - All multi-byte operands are encoded in **little-endian** format.  
 - The assembler checks for syntax errors, invalid instructions, and stack-related issues if possible.
@@ -25,7 +25,7 @@ Example:
 
 ```
 start:
-PUSH 5 ; push 5 onto stack
+PUSH 5 // push 5 onto stack
 PUSH 10
 ADD
 PRINT

@@ -6,7 +6,7 @@ from emitter import emit_bytecode
 
 def main():
     if len(sys.argv) != 3:
-        print("usage: assembler <input.asm> <output.bin>")
+        print("usage: assembler <input.ens> <output.enb>")
         sys.exit(1)
     
     source = read_source(sys.argv[1])

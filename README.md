@@ -24,7 +24,7 @@ make
 
 This produces the `Cradle` executable inside the `build/` folder.
 
-You can then run an asm program in `Cradle/programs` like this:
+You can then run an ens program in `Cradle/programs` like this:
 
 ```bash
 make asm PROGRM=<program_name>

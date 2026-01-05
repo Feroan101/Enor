@@ -19,9 +19,9 @@ fi
 
 echo "===== PASS TESTS ====="
 
-for file in "$PASS_DIR"/*.asm; do
-    name=$(basename "$file" .asm)
-    output="$BIN_DIR/$name.bin"
+for file in "$PASS_DIR"/*.ens; do
+    name=$(basename "$file" .ens)
+    output="$BIN_DIR/$name.enb"
 
     echo "------------------------"
     echo "PASS: $name"
@@ -48,9 +48,9 @@ done
 echo
 echo "===== FAIL TESTS ====="
 
-for file in "$FAIL_DIR"/*.asm; do
-    name=$(basename "$file" .asm)
-    output="$BIN_DIR/$name.bin"
+for file in "$FAIL_DIR"/*.ens; do
+    name=$(basename "$file" .ens)
+    output="$BIN_DIR/$name.enb"
 
     echo "------------------------"
     echo "FAIL: $name"
@@ -72,9 +72,9 @@ VM_PASS_DIR="./tests/vm/pass"
 echo
 echo "===== VM PASS TESTS ====="
 
-for file in "$VM_PASS_DIR"/*.asm; do
-    name=$(basename "$file" .asm)
-    output="$BIN_DIR/$name.bin"
+for file in "$VM_PASS_DIR"/*.ens; do
+    name=$(basename "$file" .ens)
+    output="$BIN_DIR/$name.enb"
 
     echo "------------------------"
     echo "VM PASS: $name"
@@ -105,9 +105,9 @@ VM_FAIL_DIR="./tests/vm/fail"
 echo
 echo "===== VM FAIL TESTS ====="
 
-for file in "$VM_FAIL_DIR"/*.asm; do
-    name=$(basename "$file" .asm)
-    output="$BIN_DIR/$name.bin"
+for file in "$VM_FAIL_DIR"/*.ens; do
+    name=$(basename "$file" .ens)
+    output="$BIN_DIR/$name.enb"
 
     echo "------------------------"
     echo "VM FAIL: $name"
