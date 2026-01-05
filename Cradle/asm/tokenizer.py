@@ -41,7 +41,11 @@ def tokenize(lines):
             return 1
 
         # wrong operand count
-        line_operands = line[1:] # operands
+        line_operands = line[1:]  # operands
+        for i, operand in enumerate(line_operands):
+            if operand.isalpha():       
+                line_operands[i] = operand.lower() # makes label lowercase
+
 
         token = dict(type = line_type, opcode = line_opcode, operands = line_operands, line = line_num)
         tokenized_lines.append(token)

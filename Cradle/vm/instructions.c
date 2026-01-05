@@ -67,11 +67,11 @@ vm_errors OP_DUP(stack *pm) {
     return VM_OK;
 }
 
-vm_errors OP_JMP( size_t limit ,size_t target) {
+vm_errors OP_JMP(size_t *ip ,size_t limit ,size_t target) {
     if (target >= limit) return VM_ERR_INVALID_JUMP;
 
-    //printf("JMP to %d\n", target);
-    // ip is handled in vm.c
+    // printf("JMP to %zu\n", target);
+    *ip = target;
     return VM_OK;
 }
 
@@ -79,14 +79,16 @@ vm_errors OP_JZ(stack *p, size_t *ip, size_t limit ,size_t target) {
     if (target >= limit)  return VM_ERR_INVALID_JUMP;
     int32_t value;
 
-    if (pop(p, &value)) return VM_ERR_STACK_UNDERFLOW;
-    if (value != 0) {
-        *ip += 2;
-    } 
-    else {
-        //printf("JMP to %d\n", target);
+    if (pop(p, &value)) return VM_ERR_STACK_UNDERFLOW; 
+
+    if (value == 0) {
+        if (target >= limit) return VM_ERR_INVALID_JUMP;
+        // printf("JZ to %zu\n", target);
         *ip = target;
+    } else {
+        *ip += 3;  
     }
+
     return VM_OK;
 }
 

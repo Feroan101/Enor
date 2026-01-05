@@ -36,9 +36,9 @@ static vm_errors vm_execute(stack *p, int32_t *memory, uint8_t *code, size_t lim
 
     while (ip < limit) {
         if (++exec_count > EXEC_LIMIT) {
-            printf("ERROR: execution limit exceeded\n");
             return VM_ERR_EXEC_LIMIT;
         }
+        // printf("IP=%zu OPCODE=%02x STACK=%zu\n", ip, code[ip], p->sp);
 
         switch(code[ip]) {
             case NOP:
@@ -46,19 +46,20 @@ static vm_errors vm_execute(stack *p, int32_t *memory, uint8_t *code, size_t lim
                 ip++;
                 break;
 
-            case PUSH:
+            case PUSH: {
                 REQUIRED(3);
                 int16_t val = code[ip + 1] | (code[ip + 2] << 8); // little endian
                 err = push(p, (int32_t)val);
                 if(err) return err;
                 ip += 3;
                 break;
+            }
             
             case POP:
                 REQUIRED(1);
                 err = OP_POP(p);
                 if(err) return err;
-                ip += 1;
+                ip++;
                 break;
 
             case ADD:
@@ -96,18 +97,20 @@ static vm_errors vm_execute(stack *p, int32_t *memory, uint8_t *code, size_t lim
                 ip++;
                 break;
             
-            case JMP:
+            case JMP: {
                 REQUIRED(3);
-                err = OP_JMP(limit, code[ip + 1]);
+                uint16_t target = code[ip + 1] | (code[ip + 2] << 8);
+                err = OP_JMP(&ip ,limit, target);
                 if (err) return err;
-                else ip = code[ip + 1];
                 break;
+            }
             
-            case JZ:
+            case JZ: {
                 REQUIRED(3);
-                err = OP_JZ(p ,&ip, limit, code[ip + 1]);
-                if (err) return err;
+                uint16_t target = code[ip + 1] | (code[ip + 2] << 8);
+                if (OP_JZ(p, &ip, limit, target)) return VM_ERR_INVALID_JUMP;
                 break;
+            }
 
             case PRINT:
                 REQUIRED(1);
@@ -116,20 +119,23 @@ static vm_errors vm_execute(stack *p, int32_t *memory, uint8_t *code, size_t lim
                 ip++;
                 break;
 
-            case LOAD:
-                REQUIRED(2);
-                err = OP_LOAD(p, memory, code[ip + 1]);
+            case LOAD: {
+                REQUIRED(3);
+                uint16_t target = code[ip + 1] | (code[ip + 2] << 8);
+                err = OP_LOAD(p, memory, target);
                 if (err) return err;
-                ip += 2;
+                ip += 3;
                 break;
+            }
 
-            case STORE:
-                REQUIRED(2);
-                err = OP_STORE(p, memory, code[ip + 1]);
+            case STORE: {
+                REQUIRED(3);
+                uint16_t target = code[ip + 1] | (code[ip + 2] << 8);
+                err = OP_STORE(p, memory, target);
                 if (err) return err;
-                ip += 2;
+                ip += 3;
                 break;
-
+            }
             case SWAP:
                 REQUIRED(1);
                 err = OP_SWAP(p);

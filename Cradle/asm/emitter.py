@@ -19,6 +19,7 @@ def emit_bytecode(tokens, path):
 
     os.makedirs(os.path.dirname(path), exist_ok=True)
 
+    # print(bytecode)
     with open(path, 'wb') as out:
         out.write(bytecode)
         
