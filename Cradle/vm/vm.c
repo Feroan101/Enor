@@ -6,7 +6,7 @@
 #include "instructions.h"
 #include "opcodes.h"
 
-#define EXEC_LIMIT 100 //inc later
+#define EXEC_LIMIT 1000 //inc later
 
 #define REQUIRED(n) \
 if (ip + n > limit) { \

@@ -1,0 +1,11 @@
+print(1 + 2 * 5)
+
+/*
+PUSH 1
+PUSH 2
+PUSH 5
+MUL
+ADD
+PRINT
+HALT
+*/

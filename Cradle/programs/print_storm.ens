@@ -1,0 +1,17 @@
+START:
+    PUSH 1        // counter = 1
+LOOP:
+    DUP
+    PRINT         // print counter
+
+    PUSH 1
+    ADD           // counter++
+
+    DUP
+    PUSH 51
+    SUB           // counter - 51
+    JZ END        // stop when counter == 51
+
+    JMP LOOP
+END:
+    HALT

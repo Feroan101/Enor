@@ -1,0 +1,12 @@
+START:
+    PUSH 5        // change this number to count from
+LOOP:
+    DUP
+    PRINT
+    PUSH 1
+    SUB
+    DUP
+    JZ END
+    JMP LOOP
+END:
+    HALT

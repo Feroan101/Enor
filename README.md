@@ -10,7 +10,7 @@ It's designed to be explicit, simple, and easy to reason about — and it runs o
 ## Cradle
 
 Cradle is the *virtual machine* that executes Enor programs.  
-It defines the runtime environment, handles bytecode execution, and even comes with a built-in assembler for turning Enor source into bytecode.  
+It defines the runtime environment, handles bytecode execution, and even comes with a built-in assembler for turning Enor source into bytecode. (`.ens` to `.enb`)  
 
 You can think of it as the backbone of Enor: without Cradle, the language doesn’t do much.  
 

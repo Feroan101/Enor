@@ -7,3 +7,6 @@ Cradle/builds
 Cradle/asm/__pycache__
 
 Cradle/tests/bin
+
+compiler/docs/private
+compiler/examples/idea.enor

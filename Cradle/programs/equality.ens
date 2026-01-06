@@ -1,0 +1,16 @@
+// Compare two numbers
+// Prints 1 if equal, 0 otherwise
+
+START:
+    PUSH 7
+    STORE 0
+
+    PUSH 7
+    STORE 1
+
+    LOAD 0
+    LOAD 1
+    EQ
+    PRINT
+
+    HALT
